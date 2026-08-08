@@ -2,7 +2,6 @@ import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 
 export const useAuthStore = defineStore("auth", () => {
-  // Estado
   const usuario = ref(
     JSON.parse(localStorage.getItem("usuario")) || null
   );
@@ -11,16 +10,21 @@ export const useAuthStore = defineStore("auth", () => {
     localStorage.getItem("token") || null
   );
 
-  // Computed
   const isAuthenticated = computed(() => !!token.value);
 
-  // Actions
+  const isAdmin = computed(() => {
+    return usuario.value?.cargo === "Admin";
+  });
 
   function login(usuarioLogado, jwt) {
     usuario.value = usuarioLogado;
     token.value = jwt;
 
-    localStorage.setItem("usuario", JSON.stringify(usuarioLogado));
+    localStorage.setItem(
+      "usuario",
+      JSON.stringify(usuarioLogado)
+    );
+
     localStorage.setItem("token", jwt);
   }
 
@@ -36,7 +40,7 @@ export const useAuthStore = defineStore("auth", () => {
     usuario,
     token,
     isAuthenticated,
-
+    isAdmin,
     login,
     logout,
   };

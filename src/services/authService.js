@@ -3,6 +3,10 @@ import api from "./api";
 export const login = (dados) => {
   return api.post("/auth/login", dados);
 };
+export const logout = () => {
+  return api.post("/auth/logout");
+};
+
 
 export const esqueciSenha = (email) => {
   return api.post("/auth/esqueci-senha", email);

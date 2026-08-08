@@ -61,21 +61,23 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import notification from '@/services/notificationService'
+
 import { Mail, Lock, Github } from 'lucide-vue-next'
 import { Icon } from '@iconify/vue'
 
 import { login } from '@/services/authService'
 import { useAuthStore } from '@/stores/authStore'
+
 import BaseLogo from '@/components/base/BaseLogo.vue'
 import BaseInput from '@/components/base/BaseInput.vue'
 import BaseButton from '@/components/base/BaseButton.vue'
 import BaseCheckbox from '@/components/base/BaseCheckbox.vue'
 
+import notification from '@/services/notificationService'
+
 import '@/assets/css/login.css'
 
 const router = useRouter()
-
 const authStore = useAuthStore()
 
 const loading = ref(false)
@@ -92,25 +94,30 @@ const entrar = async () => {
   try {
     const response = await login(form)
 
-    console.log("Resposta da API:", response)
+    console.log('Resposta da API:', response.data)
 
-    authStore.login(
-      response.data.dados.usuario,
-      response.data.dados.token
-    )
+    const usuario = response.data.dados.usuario
+    const token = response.data.dados.token
 
-    notification.success(response.data.mensagem)
+    // Salva usuário e token
+    authStore.login(usuario, token)
 
-    router.push("/home")
+    notification.success('Login realizado com sucesso!')
 
+    // Redirecionamento baseado no cargo
+    if (usuario.cargo === 'Admin') {
+      router.push('/dashboard/admin')
+    } else {
+      router.push('/home')
+
+    }
   } catch (error) {
-
     console.error(error)
 
     notification.error(
-      error.response?.data?.mensagem || "Erro ao realizar login."
+      error.response?.data?.mensagem ||
+        'E-mail ou senha inválidos.'
     )
-
   } finally {
     loading.value = false
   }
