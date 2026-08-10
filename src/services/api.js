@@ -21,4 +21,14 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Interceptor de resposta
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 export default api;

@@ -98,6 +98,7 @@
 import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { User, Mail, Lock } from "lucide-vue-next";
+import notification from '@/services/notificationService'
 
 import BaseInput from "@/components/base/BaseInput.vue";
 import BaseButton from "@/components/base/BaseButton.vue";
@@ -156,16 +157,16 @@ const cadastrar = async () => {
 
     const resposta = await usuarioService.cadastrar(usuario);
 
-    alert(resposta.mensagem);
+    notification.success(resposta.mensagem);
 
     router.push("/login");
   } catch (error) {
     console.error(error);
 
     if (error.response) {
-      alert(error.response.data.mensagem);
+      notification.error(error.response.data.mensagem);
     } else {
-      alert("Erro ao conectar com o servidor.");
+      notification.error("Erro ao conectar com o servidor.");
     }
   } finally {
     loading.value = false;

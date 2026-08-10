@@ -1,6 +1,5 @@
 <template>
   <div class="card login-card">
-
     <div class="card-body p-5">
       <BaseLogo />
       <form @submit.prevent="entrar">
@@ -36,12 +35,11 @@
       </div>
 
       <div class="d-grid gap-2">
-        <BaseButton variant="outline-secondary">
+        <BaseButton type="button" variant="outline-secondary" @click="loginGoogle">
           <Icon icon="logos:google-icon" class="me-2" width="18" height="18" />
 
           Google
         </BaseButton>
-
         <BaseButton variant="outline-dark">
           <Github :size="18" class="me-2" />
 
@@ -81,7 +79,9 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const loading = ref(false)
-
+const loginGoogle = () => {
+  window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`;
+};
 const form = reactive({
   email: '',
   senha: '',
@@ -89,37 +89,37 @@ const form = reactive({
 })
 
 const entrar = async () => {
-  loading.value = true
+  loading.value = true;
 
   try {
-    const response = await login(form)
+    const response = await login(form);
 
-    console.log('Resposta da API:', response.data)
+    
 
-    const usuario = response.data.dados.usuario
-    const token = response.data.dados.token
+    const usuario = response.data.dados.usuario;
+    const token = response.data.dados.token;
 
-    // Salva usuário e token
-    authStore.login(usuario, token)
+    authStore.login(usuario, token);
 
-    notification.success('Login realizado com sucesso!')
+    notification.success(response.data.mensagem);
 
-    // Redirecionamento baseado no cargo
-    if (usuario.cargo === 'Admin') {
-      router.push('/dashboard/admin')
+    if (usuario.cargo === "Admin") {
+      router.push("/dashboard/admin");
     } else {
-      router.push('/home')
-
+      router.push("/home");
     }
-  } catch (error) {
-    console.error(error)
 
-    notification.error(
+  } catch (error) {
+    console.error("Erro no login:", error);
+
+    const mensagem =
       error.response?.data?.mensagem ||
-        'E-mail ou senha inválidos.'
-    )
+      "E-mail ou senha inválidos.";
+
+    notification.error(mensagem);
+
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 </script>

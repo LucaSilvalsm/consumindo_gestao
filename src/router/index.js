@@ -59,6 +59,11 @@ const router = createRouter({
       name: "not-found",
       component: () => import("@/views/NotFoundView.vue"),
     },
+    {
+    path: "/google/callback",
+    name: "GoogleCallback",
+    component: () => import("@/views/GoogleCallbackView.vue")
+    },
 
     {
       path: "/:pathMatch(.*)*",
